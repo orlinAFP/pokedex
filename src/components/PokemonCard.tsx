@@ -9,6 +9,10 @@ import {
   Dimensions,
 } from 'react-native';
 import {SimplePokemon} from '../interfaces/pokemonInterfaces';
+import {useNavigation} from '@react-navigation/native';
+import {StackParams} from '../navigation/Navigator';
+import {StackNavigationProp} from '@react-navigation/stack';
+import { FadeInImage } from '../hooks/FadeInImage';
 
 interface Props {
   pokemon: SimplePokemon;
@@ -17,8 +21,8 @@ interface Props {
 const windowWidth = Dimensions.get('window').width;
 
 export const PokemonCard = ({pokemon}: Props) => {
+  const navigator = useNavigation<StackNavigationProp<StackParams>>();
   const [bgColor, setBgColor] = useState('gray');
-
   const isMounted = useRef(true);
 
   const getColor = async (uri: string) => {
@@ -45,27 +49,34 @@ export const PokemonCard = ({pokemon}: Props) => {
   useEffect(() => {
     getColor(pokemon.picture);
 
-    return () => {isMounted.current = false};
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
   return (
-    <View>
-      <TouchableOpacity activeOpacity={0.8}>
-        <View style={{...styles.container, backgroundColor: bgColor}}>
-          <View>
-            <Text style={styles.textCard}>{pokemon.name}</Text>
-            <Text style={styles.textCard}>{'#' + pokemon.id}</Text>
-          </View>
-          <View style={styles.pokebolaContainer}>
-            <Image
-              source={require('../assets/pokebola-blanca.png')}
-              style={styles.pokeball}
-            />
-          </View>
-          <Image source={{uri: pokemon.picture}} style={styles.picture} />
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={() =>
+        navigator.navigate('PokemonScreen' as any, {
+          SimplePokemon: pokemon,
+          color: bgColor,
+        })
+      }>
+      <View style={{...styles.container, backgroundColor: bgColor}}>
+        <View>
+          <Text style={styles.textCard}>{pokemon.name}</Text>
+          <Text style={styles.textCard}>{'#' + pokemon.id}</Text>
         </View>
-      </TouchableOpacity>
-    </View>
+        <View style={styles.pokebolaContainer}>
+          <Image
+            source={require('../assets/pokebola-blanca.png')}
+            style={styles.pokeball}
+          />
+        </View>
+        <FadeInImage uri={pokemon.picture} style={{...styles.picture}} />
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -114,7 +125,7 @@ const styles = StyleSheet.create({
     height: 100,
     width: 80,
     position: 'absolute',
-    right: -9,
-    bottom: -18,
+    right: -5,
+    bottom: -10,
   },
 });

@@ -4,7 +4,7 @@ import {styles} from '../theme/appTheme';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {usePokemonPaginated} from '../hooks/usePokemonPaginated';
 import {FadeInImage} from '../hooks/FadeInImage';
-import {PokemonCard} from './PokemonCard';
+import {PokemonCard} from '../components/PokemonCard';
 
 export const HomeScreen = () => {
   const {top} = useSafeAreaInsets();
@@ -17,23 +17,20 @@ export const HomeScreen = () => {
         source={require('../assets/pokebola.png')}
         style={styles.pokebalBG}
       />
-      <View style={{alignItems:'center',}}>
+      <View style={{alignItems: 'center'}}>
         <FlatList
-
-        showsVerticalScrollIndicator={false}
-    
+          showsVerticalScrollIndicator={false}
           data={simplePokemonList}
           numColumns={2}
           renderItem={({item}) => <PokemonCard pokemon={item} />}
           keyExtractor={item => item.id.toString()}
           ListHeaderComponent={
             <Text
-              style={{                
+              style={{
                 ...styles.title,
                 marginTop: top + 10,
               }}>
-              {' '}
-              Pokedex{' '}
+              Pokedex
             </Text>
           }
           onEndReached={loadPokemons}
